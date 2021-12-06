@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int getline();
 /**
  * open_file - Opens a file.
  * @file_name: String with the name of the file.
