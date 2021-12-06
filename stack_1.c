@@ -1,95 +1,44 @@
 #include "monty.h"
 
 /**
- * _add - add two numbers from the top of that stack
- * @stack: the stack
- * @line_number: the line number
- * Return: none
+ * mul_nodes - Adds the top two elements of the stack.
+ * @stack: Pointer to a pointer pointing to top node of the stack.
+ * @line_number: Interger representing the line number of of the opcode.
  */
-void _add(stack_t **stack, unsigned int line_number)
+void mul_nodes(stack_t **stack, unsigned int line_number)
 {
 	int sum;
 
-	if (*stack == NULL || (*stack)->next == NULL)
-		handle_errors(ERROR_ADD);
+	if (stack == NULL || *stack == NULL || (*stack)->next == NULL)
+		more_err(8, line_number, "mul");
 
-	sum = (*stack)->n + (*stack)->next->n;
-	_pop(stack, line_number);
+	(*stack) = (*stack)->next;
+	sum = (*stack)->n * (*stack)->prev->n;
 	(*stack)->n = sum;
+	free((*stack)->prev);
+	(*stack)->prev = NULL;
 }
 
-/**
- * _nop - does not print, do not pass go, do not collect $200
- * @stack: the stack
- * @line_number: the line number
- *
- * Return: void
- */
-void _nop(stack_t **stack, unsigned int line_number)
-{
-	(void)stack;
-	(void)line_number;
-}
 
 /**
- * _sub - subtracts the top element of the stack from the second top
- * @stack: the stack
- * @line_number: the line number
- *
- * Return: void
+ * mod_nodes - Adds the top two elements of the stack.
+ * @stack: Pointer to a pointer pointing to top node of the stack.
+ * @line_number: Interger representing the line number of of the opcode.
  */
-void _sub(stack_t **stack, unsigned int line_number)
+void mod_nodes(stack_t **stack, unsigned int line_number)
 {
-	int difference;
+	int sum;
 
-	if (*stack == NULL || (*stack)->next == NULL)
-		handle_errors(ERROR_SUB);
+	if (stack == NULL || *stack == NULL || (*stack)->next == NULL)
 
-	difference = (*stack)->next->n - (*stack)->n;
+		more_err(8, line_number, "mod");
 
-	_pop(stack, line_number);
-	(*stack)->n = difference;
-}
-
-/**
- * _div - divides the second top element of the stack by the top element
- * @stack: the stack
- * @line_number: the line number
- *
- * Return: void
- */
-void _div(stack_t **stack, unsigned int line_number)
-{
-	int quotient;
-
-	if (*stack == NULL || (*stack)->next == NULL)
-		handle_errors(ERROR_DIV);
 
 	if ((*stack)->n == 0)
-		handle_errors(ERROR_DIV_ZERO);
-
-	quotient = (*stack)->next->n / (*stack)->n;
-
-	_pop(stack, line_number);
-	(*stack)->n = quotient;
-}
-
-/**
- * _mul - multiplies the second top element of the stack with the top
- * @stack: the stack
- * @line_number: the line number
- *
- * Return: void
- */
-void _mul(stack_t **stack, unsigned int line_number)
-{
-	int product;
-
-	if (*stack == NULL || (*stack)->next == NULL)
-		handle_errors(ERROR_MUL);
-
-	product = (*stack)->next->n * (*stack)->n;
-
-	_pop(stack, line_number);
-	(*stack)->n = product;
+		more_err(9, line_number);
+	(*stack) = (*stack)->next;
+	sum = (*stack)->n % (*stack)->prev->n;
+	(*stack)->n = sum;
+	free((*stack)->prev);
+	(*stack)->prev = NULL;
 }

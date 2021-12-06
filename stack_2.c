@@ -1,119 +1,95 @@
 #include "monty.h"
 
 /**
- * _mod - computes the rest of the division of the second top element of the
- *        stack by the top element of the stack.
- * @stack: the stack
- * @line_number: the line number
- *
- * Return: void
+ * print_char - Prints the Ascii value.
+ * @stack: Pointer to a pointer pointing to top node of the stack.
+ * @line_number: Interger representing the line number of of the opcode.
  */
-void _mod(stack_t **stack, unsigned int line_number)
+void print_char(stack_t **stack, unsigned int line_number)
 {
-	int modulo;
+	int ascii;
 
-	if (*stack == NULL || (*stack)->next == NULL)
-		handle_errors(ERROR_MOD);
+	if (stack == NULL || *stack == NULL)
+		string_err(11, line_number);
 
-	if ((*stack)->n == 0)
-		handle_errors(ERROR_DIV_ZERO);
-
-	modulo = (*stack)->next->n % (*stack)->n;
-
-	_pop(stack, line_number);
-	(*stack)->n = modulo;
+	ascii = (*stack)->n;
+	if (ascii < 0 || ascii > 127)
+		string_err(10, line_number);
+	printf("%c\n", ascii);
 }
 
 /**
- * _pchar - prints the char type of the head node integer
- * @stack: the stack
- * @line_number: line number
- *
- * Return: None
+ * print_str - Prints a string.
+ * @stack: Pointer to a pointer pointing to top node of the stack.
+ * @ln: Interger representing the line number of of the opcode.
  */
-void _pchar(stack_t **stack, unsigned int line_number)
+void print_str(stack_t **stack, __attribute__((unused))unsigned int ln)
 {
-	(void)line_number;
+	int ascii;
+	stack_t *tmp;
 
-	if (!stack || !*stack)
-		handle_errors(ERROR_STACK_EMPTY);
-
-	if ((*stack)->n < 0 || (*stack)->n > 127)
-		handle_errors(ERROR_PCHAR_RANGE);
-
-	printf("%c\n", (*stack)->n);
-}
-
-/**
- * _pstr - prints the char type of the head node integer
- * @stack: the stack
- * @line_number: line number
- *
- * Return: None
- */
-void _pstr(stack_t **stack, unsigned int line_number)
-{
-	stack_t *copy;
-
-	(void)line_number;
-
-	for (copy = *stack; copy; copy = copy->next)
+	if (stack == NULL || *stack == NULL)
 	{
-		if (copy->n < 1 || copy->n > 127)
+		printf("\n");
+		return;
+	}
+
+	tmp = *stack;
+	while (tmp != NULL)
+	{
+		ascii = tmp->n;
+		if (ascii <= 0 || ascii > 127)
 			break;
-		printf("%c", copy->n);
+		printf("%c", ascii);
+		tmp = tmp->next;
 	}
-	putchar('\n');
+	printf("\n");
 }
 
 /**
- * _rotl - rotates the stack top to bottom
- * @stack: the stack
- * @line_number: the line number
- * Return: none
+ * rotl - Rotates the first node of the stack to the bottom.
+ * @stack: Pointer to a pointer pointing to top node of the stack.
+ * @ln: Interger representing the line number of of the opcode.
  */
-void _rotl(stack_t **stack, unsigned int line_number)
+void rotl(stack_t **stack, __attribute__((unused))unsigned int ln)
 {
-	int end;
-	stack_t *copy;
+	stack_t *tmp;
 
-	(void)line_number;
+	if (stack == NULL || *stack == NULL || (*stack)->next == NULL)
+		return;
 
-	if (stack && *stack)
-	{
-		end = (*stack)->n;
+	tmp = *stack;
+	while (tmp->next != NULL)
+		tmp = tmp->next;
 
-		for (copy = *stack; copy->next; copy = copy->next)
-			copy->n = copy->next->n;
-		copy->n = end;
-	}
+	tmp->next = *stack;
+	(*stack)->prev = tmp;
+	*stack = (*stack)->next;
+	(*stack)->prev->next = NULL;
+	(*stack)->prev = NULL;
 }
 
+
 /**
- * _rotr - rotates the stack bottom to top
- * @stack: the stack
- * @line_number: the line number
- * Return: none
+ * rotr - Rotates the last node of the stack to the top.
+ * @stack: Pointer to a pointer pointing to top node of the stack.
+ * @ln: Interger representing the line number of of the opcode.
  */
-void _rotr(stack_t **stack, unsigned int line_number)
+void rotr(stack_t **stack, __attribute__((unused))unsigned int ln)
 {
-	int next, current;
-	stack_t *copy;
+	stack_t *tmp;
 
-	(void)line_number;
+	if (stack == NULL || *stack == NULL || (*stack)->next == NULL)
+		return;
 
-	if (stack && *stack)
-	{
-		copy = *stack;
-		next = copy->n;
+	tmp = *stack;
 
-		while (copy->next)
-		{
-			current = next;
-			next = copy->next->n;
-			copy->next->n = current;
-			copy = copy->next;
-		}
-		(*stack)->n = next;
-	}
+	while (tmp->next != NULL)
+		tmp = tmp->next;
+
+	tmp->next = *stack;
+	tmp->prev->next = NULL;
+	tmp->prev = NULL;
+	(*stack)->prev = tmp;
+	(*stack) = tmp;
 }

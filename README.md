@@ -1,1 +1,1 @@
-### Project to create an interpreter for Monty ByteCode files
+### Using C to create an interpreter for Montu ByteCode Files
